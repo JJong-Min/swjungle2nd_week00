@@ -1,5 +1,7 @@
 {% extends 'layout.html' %}
 {% block contents %}
+
+
 <div> <!-- 가장 밖 div-->
     
     <div> <!-- progress bar-->
@@ -15,12 +17,53 @@
 
     <div> <!--선택지-->
         {% for question in questionList %}
-        <div style="float: left;">
+        <div style="float: left; margin-left: 2%;">
+            <button onclick="check_answer(`{{question}}`)">
             {{question}}
+            </button>
         </div>
+        {% endfor %}
     </div> <!--선택지 끝-->
 
-</div><!--가장밖 끝-->
 
+</div><!--가장밖 끝-->
+<script>
+    sessionStorage.setItem('saved_num', 1)
+    //시간되면 toInt 해주기
+     num = sessionStorage.getItem('saved_num')
+
+    answer = '{{answer}}'
+    function check_answer(question){
+        
+        if (question == answer){
+            alert('answer')
+        }
+        else{
+            alert('false')
+        }
+        // 몇 번째 문제인지 확인
+        if( num == 'null111'){
+            location.href = '/'
+            sessionStorage.setItem('saved_num', 'null');            
+        }
+        else{
+            num += 1;
+            console.log(num);
+            sessionStorage.setItem('saved_num', num);
+        }   
+    }
+    // $(document).ready(function(){
+    //     $.ajax({
+    //             type: 'GET',
+    //             url: 'quiz1',
+    //             data: {},
+    //             success: function (response) {
+    //                 let  imgSrc = response['imgSrc']
+    //                 let  questionList =response['questionList']
+    //                 let  answer = response['answer']
+    //             }
+    //         });
+
+</script>
 {% endblock %}
 
