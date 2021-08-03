@@ -10,23 +10,17 @@
     </div>
     
     <div> <!-- 사진-->
-    <img>
+    <img src = "{{imgSrc}}" alt="뽀껫몬~">
     </div>
 
     <div> <!--선택지-->
-        <div> <!--Q1-->
-
-        </div>
-        <div> <!--Q2-->
-
-        </div>
-        <div> <!--Q3-->
-
-        </div>
-        <div> <!--Q4-->
-
+        {% for question in questionList %}
+        <div style="float: left;">
+            {{question}}
         </div>
     </div> <!--선택지 끝-->
+
 </div><!--가장밖 끝-->
 
 {% endblock %}
+
