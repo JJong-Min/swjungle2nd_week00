@@ -1,12 +1,59 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
-</html>
+{% extends 'layout.html' %}
+{% block contents %}
+<div class="divider"></div>
+<div class="section">
+    <div class="col s12 m7">
+        <h4 class="header">퀴즈 1</h4>
+        <div class="card horizontal">
+            <div class="card-image">
+            <img src="{{ url_for('static', filename='image/dummy.png') }}">
+            </div>
+            <div class="card-stacked">
+            <div class="card-content">
+                <p>퀴즈 1은 이러한 서비스입니다.</p>
+            </div>
+            <div class="card-action">
+                <a href="#"></a>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col s12 m7">
+    <h5 class="header">퀴즈 2</h5>
+    <div class="card horizontal">
+        <div class="card-image">
+        <img src="{{ url_for('static', filename='image/dummy.png') }}">
+        </div>
+        <div class="card-stacked">
+        <div class="card-content">
+            <p>퀴즈 2는 이러한 시스템입니다.</p>
+        </div>
+        <div class="card-action">
+            <a href="#"></a>
+        </div>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <div class="col s12 m7">
+        <h5 class="header">랭킹 시스템</h5>
+        <div class="card horizontal">
+            <div class="card-image">
+            <img src="{{ url_for('static', filename='image/dummy.png') }}">
+            </div>
+            <div class="card-stacked">
+            <div class="card-content">
+                <p>랭킹 시스템은 이러한 서비스입니다.</p>
+                <p>랭킹 시스템을 이용하고 싶다면 회원가입을 해주세요.</p>
+            </div>
+            <div class="card-action">
+                <a href="#"></a>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
