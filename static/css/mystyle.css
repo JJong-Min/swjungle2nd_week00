@@ -1,0 +1,36 @@
+.rank_board{
+    display: flex;
+    justify-content: center;
+    margin-top: 15%;
+}
+.rank_container{
+    background-color:wheat;
+    width: 400px;
+    height: auto;
+    border-radius: 5%;
+    padding: 20px;
+}
+.rank_btn_container{
+    display: flex;
+    width: 100%;
+    height: 50px;
+}
+.rank_check{
+    float: left;
+    margin-left: 17%;
+    width: 100px;
+    height: 50px;
+    font-size: 20px;
+}
+.rank_table_parent {
+    width: 100%;
+    border-top: 1px solid #444444;
+    border-collapse: collapse;
+  }
+.rank_table_child{
+    text-align: center;
+}
+.rank_td{
+    border-bottom: 1px solid #444444;
+    padding: 10px;
+}
