@@ -1,4 +1,38 @@
 {% extends 'layout.html' %}
 {% block contents %}
+    <div class="quiz2_board">
+        <div class="quiz2_question">
+            <p>{{question}}</p>
+        </div>
+        <div class="quiz2_answer">
+            {% for x in range(4) %}
+                <label class="quiz2_img">
+                    <img class="quiz2_img_scale" src='{{url[x]}}' />
+                    <input class="with-gap" onclick="check_count()" name="group3" type="radio" checked />
+                    <span>{{question_list[x]}}</span>
+                </label>
+            {% endfor %}
 
+        </div>
+    </div>
+<script>
+    num = 'null';
+    score = 0;
+    num = sessionStorage.getItem('saved_num');
+    score = sessionStorage.getItem('saved_score');
+    function check_count(){
+        if(num == 'null11'){
+            location.href = `/`;
+            sessionStorage.setItem('saved_num','null');
+        }
+        else{
+            num = num+'1';
+            score = score+20;
+            console.log(num, score)
+            location.href = `/quiz2`;
+            sessionStorage.setItem('saved_num', num);
+            sessionStorage.setItem('saved_score', score);
+        }     
+    }
+</script>
 {% endblock %}
