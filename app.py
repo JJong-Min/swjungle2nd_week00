@@ -10,6 +10,10 @@ db = client.week0
 def home():
    return render_template('layout.html')
 
+@app.route('/quiz2')
+def quiz2():
+   return render_template('quiz2.html')
+
 @app.route('/rank')
 def rank():
    return render_template('ranking.html')

@@ -34,3 +34,18 @@
     border-bottom: 1px solid #444444;
     padding: 10px;
 }
+
+.quiz2_board{
+    display: flex;
+    background-color:wheat;
+    height: 60vmax;
+    justify-content: center;
+    margin-top: 15%;
+}
+.quiz2_question{
+    display: flex;
+    background-color:wheat;
+    height: 60vmax;
+    justify-content: center;
+    margin-top: 15%;
+}
