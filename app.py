@@ -1,3 +1,4 @@
+ 
 from array import array
 from flask import Flask, json, request, render_template, jsonify, redirect, url_for, session
 import requests, random
@@ -11,8 +12,8 @@ from functools import wraps
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'IOJPI241JPI'
 bcrypt = Bcrypt(app)
-#client = MongoClient('localhost', 27017)
-client = MongoClient('mongodb://test:test@localhost', 27017)
+client = MongoClient('localhost', 27017)
+#client = MongoClient('mongodb://test:test@localhost', 27017)
 db = client.week0
 
 def check_for_token(func):
@@ -42,6 +43,10 @@ def home():
       session['array_check'].append(int(i))
    print(session['array_check'])
    return render_template('index.html')
+
+@app.route('/robots.txt')
+def robots():
+   return render_template('robot.txt')
 
 
 @app.route('/quiz2', methods=['GET', 'POST'])
