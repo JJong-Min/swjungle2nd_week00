@@ -43,6 +43,10 @@ def home():
    print(session['array_check'])
    return render_template('index.html')
 
+@app.route('/robots.txt')
+def robots():
+   return render_template('robot.txt')
+
 
 # @app.route('/quiz2', methods=['GET', 'POST'])
 # def quiz2():
