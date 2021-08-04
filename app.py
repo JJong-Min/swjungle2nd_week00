@@ -7,7 +7,7 @@ import datetime
 import numpy as np
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'dance'
+app.config['SECRET_KEY'] = "OOO"
 
 client = MongoClient('localhost', 27017)
 db = client.week0
@@ -16,6 +16,10 @@ db = client.week0
 
 @app.route('/')
 def home():
+   if 'loged_in' in session:
+      print(session['logged_in'])
+   else:
+      print('a')
    for x in range(3):
       num = str(x+1)
       db.quiz2.update_one({'quiz_num':num},{'$set':{'check':False}})
@@ -88,7 +92,8 @@ def login_pro():
       if user_info['userPW'] == user_pw:
          access_payload = {"id": user_id, "password": user_pw, "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}
          refresh_payload = {"id": user_id, "password": user_pw, "exp": datetime.datetime.utcnow() + datetime.timedelta(days=30)}
-         return jsonify({"result": "success", 'access_token': jwt.encode(access_payload, key, algorithm="HS256"), 'refresh_token': jwt.encode(refresh_payload, key, algorithm="HS256")})
+         session['logged_in'] = True
+         return jsonify({"result": "success", 'access_token': jwt.encode(access_payload, app.config['SECRET_KEY'], algorithm="HS256"), 'refresh_token': jwt.encode(refresh_payload, app.config['SECRET_KEY'], algorithm="HS256")})
       else:
          return jsonify(result = "fail")
    except:
