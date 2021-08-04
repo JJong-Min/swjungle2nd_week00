@@ -17,27 +17,40 @@
             crossorigin="anonymous"></script>
     <script src="{{ url_for('static', filename='js/myjs.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/mystyle.css') }}">
+
+    <script>
+        function go_quiz2(){
+            var num_check = 0;
+            location.href = `/quiz2?q_num=1&&check=0&&count=${num_check}`;
+            sessionStorage.setItem('saved_num',0);
+            sessionStorage.setItem('saved_score',0);
+        }
+    </script>
+
 </head>
     <nav id = "layout-nav">
         <div class="nav-wrapper">
             <div id="layout-nav-left">
                 <ul class="left hide-on-med-and-down">
                     <li><a href="/quiz1">퀴즈1</a></li>
-                    <li><a href="/quiz2">퀴즈2</a></li>
+                    <li><a onclick='go_quiz2()'>퀴즈2</a></li>
                 </ul>
             </div>
-        <a href="/" class="brand-logo center">Logo</a>
+            <div>
+                <img href="/" onclick="JavaScript:location.href='/'; sessionStorage.setItem('saved_score', 0);" class='brand-logo center layout_mouse' alt='logo' src='../static/pokemon.png' width='20%' height='90px'>
+            </div>
             <div id="layout-nav-right">
                 <ul class="right hide-on-med-and-down">
                     <li><a href="/rank">랭킹</a></li>
                     {% if session['logged_in'] %}
-                    <li><a onclick="getModification()">회원정보수정</a></li>
+                        <li><a onclick="getModification()">회원정보수정</a></li>
                     {% endif %}    
                     {% if session['logged_in'] %}
-                    <li><a class="waves-effect waves-light btn" href="/logout">로그아웃</a></li>
+                        <li><a class="waves-effect waves-light btn" href="/logout">로그아웃</a></li>
                     {% else %}
-                    <li><a class="waves-effect waves-light btn" href="/login">로그인</a></li>
+                        <li><a class="waves-effect waves-light btn" href="/login">로그인</a></li>
                     {% endif %}
+
                 </ul>
             </div>
         </div>
