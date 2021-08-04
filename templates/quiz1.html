@@ -1,4 +1,64 @@
 {% extends 'layout.html' %}
 {% block contents %}
 
+    <div class="quiz1_board"> <!-- 가장 밖 div-->
+    <div class="quiz1_mid_div">
+    <div class="progress_bar_div"> <!-- progress bar-->
+        <progress value="{{(count+1) * 20}}" max="100" class="progress_bar"></progress>
+    </div>
+    
+    <div class="quiz1_question"> <!-- 텍스트 박스-->
+        내가 누구게?
+    </div>
+    
+    <div class="quiz1_img_div"> <!-- 사진-->
+    <img class="quiz1_img" src = "{{imgSrc}}" alt="뽀껫몬~">
+    </div>
+
+    <div class="quiz1_answer"> <!--선택지-->
+        {% for x in range(4) %}
+        <div style="float: left; margin-left: 2%;">
+            <button class="quiz1_button" onclick="check_count( `{{ x+1}}` ,'{{score}}','{{num_check}}','{{count}}')">
+            {{question_list[x]}}
+            </button>
+        </div>
+        {% endfor %}
+    </div> <!--선택지 끝-->
+</div>
+
+</div><!--가장밖 끝-->
+<script>
+    $(document).ready(function(){
+        score = sessionStorage.getItem('saved_score');
+        score = parseInt(score)
+        num = parseInt(num)
+    });
+
+       function check_count(check,score,question_check,count){
+           console.log(check)
+        let question_num = question_check;
+        count = parseInt(count);
+        if(count == 4){
+            $.ajax({
+                type: 'POST',
+                url: `/quiz1`,
+                data: {'last_question' : question_num,
+            'last_check' :check},
+                success: function (response) {
+                    alert(response['msg'])
+                }
+            });
+            setTimeout(function(){
+                location.href='/score';
+            },1000);
+            sessionStorage.setItem('saved_num',0);
+        }
+        else{
+            count = count + 1;
+            location.href = `/quiz1?q_num=${question_num}&&check=${check}&&count=${count}`;
+            sessionStorage.setItem('saved_num', num);
+        }     
+    }
+</script>
 {% endblock %}
+

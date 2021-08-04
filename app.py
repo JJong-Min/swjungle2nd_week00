@@ -76,7 +76,40 @@ def quiz2():
    question_list = db.quiz2.find_one({'quiz_num':num})['questionList']
    answer = db.quiz2.find_one({'quiz_num':num})['answer']
    return render_template('quiz2.html',question_list=question_list, score=session['score_check'],url=url, question=question, num_check=num, count=count)
-   
+
+@app.route('/quiz1', methods=['GET', 'POST'])
+def quiz1():
+   if request.method == 'POST':
+      last_question = request.form.get('last_question')
+      last_check = request.form.get('last_check')
+      if last_check ==db.quiz1.find_one({'quiz_num': last_question})['answer']:
+         session['score_check'] += 20
+         session['quiz_num'] = 1
+         print(last_question, last_check)
+      return jsonify({'msg':'점수공개'})
+
+   already_question_num = request.args.get('q_num')
+   already_check_num = request.args.get('check')
+   count = request.args.get('count')
+   count = int(count)
+ 
+   print(type(already_question_num))
+   check_answer = db.quiz1.find_one({'quiz_num': already_question_num})['answer']
+   print(check_answer)
+   if check_answer == already_check_num:
+      session['score_check'] += 20
+      session['quiz_num'] = 1
+      print(session['score_check'])
+   #print(type(already_question_num),already_check_num)
+   rand = session['array_check'][count]
+   num = str(rand)
+   check = db.quiz1.find_one({'quiz_num':num})['check']
+
+   url = db.quiz1.find_one({'quiz_num':num})['imgSrc']
+   question_list = db.quiz1.find_one({'quiz_num':num})['questionList']
+   answer = db.quiz1.find_one({'quiz_num':num})['answer']
+   return render_template('quiz1.html',question_list=question_list, score=session['score_check'],imgSrc=url,  num_check=num, count=count)
+
 
 @app.route('/rank')
 def rank():

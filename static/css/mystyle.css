@@ -34,7 +34,25 @@
     border-bottom: 1px solid #444444;
     padding: 10px;
 }
+.progress_bar_div{
+    margin-top: 10%;
+}
+.progress_bar{
+        position: center ;
+        position: relative;
+        right: 40px;
+        width: 150%;
+        height: 100px;
 
+}
+.quiz1_mid_div{
+    align-items: center;
+}
+.quiz1_img{
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
+}
 .quiz2_board{
     display: flex;
     flex-direction: column;
@@ -43,7 +61,14 @@
     justify-content: center;
     align-items: center;
     margin: 5%;
-    
+
+}
+.quiz1_board{
+    display: flex;
+    flex-direction: column;
+    background-color:wheat;
+    height: 60vmax;
+    align-items: center;
 }
 .quiz2_question{
     background-color: plum;
@@ -53,6 +78,16 @@
     font-size: 25px;
     margin-top: -35%;
 }
+.quiz1_question{
+
+    background-color: plum;
+    width: 120%;
+    height: 10%;
+    text-align: center;
+    font-size: 25px;
+    position: relative;
+    right: 20px;
+}
 .quiz2_answer{
     width: 100%;
     height: 120px;
@@ -60,6 +95,34 @@
     font-size: 25px;
     display: flex;
 }
+
+.quiz1_answer{
+    width: 120%;
+    height: 120px;
+    margin-top: 5%;
+    font-size: 25px;
+    display: flex;
+}
+.quiz1_button{
+        cursor: pointer;
+    
+
+        color: #000000;
+        border: #000000 solid 1px;
+        padding: 13px;
+        background-color: #ffffff;
+    
+        color: #ffffff;
+        background-color: #000000;
+
+      
+}
+.quiz1_but_div{
+    width: 140%;
+    position: relative;
+    right: 30px;
+}
+
 .quiz2_img{
     width: 100%;
     height: 200px;
