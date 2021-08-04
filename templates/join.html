@@ -4,25 +4,85 @@
   <div class="row">
     <form class="col s12">
       <div class="row">
-        <div class="input-field col s12">
-          <input id="name" type="text" class="validate">
+        <div class="input-field col s12"> 
+          <input id="name" type="text" class="validate" required>
           <label for="name">Name</label>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
-          <input id="password" type="password" class="validate">
-          <label for="password">Password</label>
+          <input id="userID" type="text" class="validate" required>
+          <label for="userID">User ID</label>
+          <p id="userIdInfo"></p>
+          <p id="userIdInfo2"></p>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
-          <input id="email" type="email" class="validate">
+          <input id="userPW" type="password" class="validate" required>
+          <label for="userPW">Password</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="email" type="email" class="validate" required>
           <label for="email">Email</label>
         </div>
       </div>
-      <button class="btn waves-effect waves-light">제출</button>
     </form>
   </div>
 </div>
+<button class="btn waves-effect waves-light" onclick="join()">제출</button>
+<button class="btn waves-effect waves-light" onclick="idOverlap()">ID중복확인</button>
+<script>
+  function join() {
+    let userName = $("#name").val();
+    let userId = $("#userID").val();
+    let userPw = $("#userPW").val();
+    let userEmail = $("#email").val();
+    let info = $('#userIdInfo').text();
+    if (info == "" || info == "중복된 아이디입니다.") {
+      $('#userIdInfo2').text("아이디 중복 확인 해주세요!")
+    } else {
+    $.ajax({
+      
+      type: "POST", 
+      url: "/join_pro",
+      data: { ID_give: userId, PW_give: userPw, Name_give: userName, Email_give: userEmail},
+      success: function(response){
+        if (response['result'] == 'success') {
+          location.href = "/welcome";
+        } else {
+          alert("예기치 못한 오류가 발생했습니다. 다시 입력해주세요.")
+        }
+      }
+    })
+  }
+  }
+
+
+  function idOverlap() {
+    let userId = $("#userID").val();
+    let info = $('#userIdInfo').text();
+    $.ajax({
+      type: "POST", 
+      url: "/id_overlapping_confirm",
+      data: {ID_give: userId}, // 데이터를 주는 방법
+      success: function(response){
+        console.log(response)
+        if (response['result']=="success") {
+          $('#userIdInfo').text("사용가능한 아이디입니다.")
+          $('#userIdInfo2').text("")
+        }
+        else {
+          $('#userIdInfo').text( "중복된 아이디입니다.")
+          $('#userIdInfo2').text("")
+          $("#userID").val("")
+        }
+      }
+    })
+      }
+
+</script>
+
 {% endblock %}
