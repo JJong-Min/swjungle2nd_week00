@@ -4,8 +4,6 @@ import requests, random
 
 from pymongo import MongoClient
 
-
-
 app = Flask(__name__)
 client = MongoClient('localhost', 27017)
 db = client.week0
@@ -15,7 +13,7 @@ db = client.week0
 def home():
    for x in range(3):
       num = str(x+1)
-      db.quiz2.update_one({'quiz_num':num},{'$set':{'check':False}})
+   #   db.quiz2.update_one({'quiz_num':num},{'$set':{'check':False}})
    return render_template('layout.html')
 
 @app.route('/quiz2')
@@ -37,7 +35,21 @@ def quiz2():
       return render_template('quiz2.html',question_list=question_list, url=url, question=question)
    else:
       return redirect('/quiz2')
-   
+
+@app.route('/quiz1')
+def quiz1():
+   rand = random.randint(1,3)
+   tmp_num = str(rand)
+   check = db.quiz1.find_one({'quiz_num': tmp_num})['check']
+   if check == False:
+      url = db.quiz1.find_one({'quiz_num' : tmp_num})['imgSrc']
+      question_list = db.quiz1.find_one({'quiz_num' : tmp_num})['questionList']
+      answer = db.quiz1.find_one({'quiz_num':tmp_num})['answer']
+      db.quiz1.update_one({'quiz_num' : tmp_num}, {'$set' : {'check': True }}) 
+      return render_template('quiz1.html' , imgSrc = url, quesitons_list  = question_list, answer= answer )
+   else:
+
+      return redirect('/quiz1')
 
 @app.route('/rank')
 def rank():
@@ -65,10 +77,6 @@ def rank_list():
 
 
 
-@app.route('/quiz1')
-def quiz1():
-   return render_template('quiz1.html', imgSrc = 'http://img2.tmon.kr/cdn3/deals/2019/05/10/2025175798/review_7eec8_97vkj.jpg'
-   , questionList = ['피츄', '피피츄', '핖핖카', '피카츄'] , answer ='피카츄', num = 'null')
 
 @app.route('/login')
 def login():
