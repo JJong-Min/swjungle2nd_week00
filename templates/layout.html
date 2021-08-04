@@ -17,28 +17,6 @@
             crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/mystyle.css') }}">
     <script>
-        function setCookie(c_name,value,exdays)
-        {
-        var exdate=new Date();
-        exdate.setDate(exdate.getDate() + exdays);
-        var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
-        document.cookie=c_name + "=" + c_value;
-        }
-
-        function getCookie(c_name)
-        {
-        var i,x,y,ARRcookies=document.cookie.split(";");
-        for (i=0;i<ARRcookies.length;i++)
-        {
-            x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
-            y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
-            x=x.replace(/^\s+|\s+$/g,"");
-            if (x==c_name)
-            {
-            return unescape(y);
-            }
-        }
-        }
     </script>
 </head>
     <nav id = "layout-nav">
@@ -46,10 +24,12 @@
             <div id="layout-nav-left">
                 <ul class="left hide-on-med-and-down">
                     <li><a href="/quiz1">퀴즈1</a></li>
-                    <li><a href="/quiz2">퀴즈2</a></li>
+                    <li><a href="/quiz2" onclick="JavaScript:sessionStorage.setItem('saved_num',0);sessionStorage.setItem('saved_score',0);">퀴즈2</a></li>
                 </ul>
             </div>
-        <a href="/" class="brand-logo center">Logo</a>
+            <div>
+                <img href="/" onclick="JavaScript:location.href='/'; sessionStorage.setItem('saved_score', 0);" class='brand-logo center layout_mouse' alt='logo' src='../static/pokemon.png' width='20%' height='90px'>
+            </div>
             <div id="layout-nav-right">
                 <ul class="right hide-on-med-and-down">
                     <li><a href="/rank">랭킹</a></li>
