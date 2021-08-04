@@ -17,6 +17,12 @@
             crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/mystyle.css') }}">
     <script>
+        function go_quiz2(){
+            var num_check = 0;
+            location.href = `/quiz2?q_num=1&&check=0&&count=${num_check}`;
+            sessionStorage.setItem('saved_num',0);
+            sessionStorage.setItem('saved_score',0);
+        }
     </script>
 </head>
     <nav id = "layout-nav">
@@ -24,7 +30,7 @@
             <div id="layout-nav-left">
                 <ul class="left hide-on-med-and-down">
                     <li><a href="/quiz1">퀴즈1</a></li>
-                    <li><a href="/quiz2" onclick="JavaScript:sessionStorage.setItem('saved_num',0);sessionStorage.setItem('saved_score',0);">퀴즈2</a></li>
+                    <li><a onclick='go_quiz2()'>퀴즈2</a></li>
                 </ul>
             </div>
             <div>

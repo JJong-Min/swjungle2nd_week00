@@ -87,3 +87,8 @@
     top: 250px;
     left: 150px;
 }
+.quiz2_btn{
+    position: fixed;
+    top: 52%;
+    left: 45%;
+}

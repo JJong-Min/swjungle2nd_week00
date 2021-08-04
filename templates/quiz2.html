@@ -8,7 +8,7 @@
             {% for x in range(4) %}
                 <label class="quiz2_img">
                     <img class="quiz2_img_scale" src='{{url[x]}}' />
-                    <input class="with-gap" onclick="check_count({{x+1}},'{{answer}}')" name="group3" type="radio" checked />
+                    <input class="with-gap" onclick="check_count({{x+1}},'{{score}}','{{num_check}}','{{count}}')" name="group3" type="radio" checked />
                     <span>{{question_list[x]}}</span>
                 </label>
             {% endfor %}
@@ -18,35 +18,34 @@
 <script>
     
     $(document).ready(function(){
-        num = sessionStorage.getItem('saved_num');
         score = sessionStorage.getItem('saved_score');
         score = parseInt(score)
         num = parseInt(num)
-        console.log(typeof(num),typeof(score))
     });
-    function check_count(check,answer){
-        console.log(check,answer)
-        let answer_check = decode_utf8(answer)
-        console.log(check,answer_check)
-        if(check == answer){
-            score = score + 20;
-        }
-        if(num == 2){
-            sessionStorage.setItem('saved_score',score);
-            window.open('/score','점수입니다','width=400px,height=400px,left=600px')
-            location.href = `/`;
+    function check_count(check,score,question_check,count){
+        let question_num = question_check;
+        count = parseInt(count);
+        if(count == 2){
+            $.ajax({
+                type: 'POST',
+                url: `/quiz2`,
+                data: {},
+                success: function (response) {
+                    alert(response['msg'])
+                }
+            });
+            setTimeout(function(){
+                window.open('/score','점수입니다','width=400px,height=400px,left=600px');
+                location.href = `/`;
+            },1000);
             sessionStorage.setItem('saved_num',0);
-            sessionStorage.setItem('saved_score',0);
         }
         else{
-            num = num + 1;
-            location.href = `/quiz2`;
+            count = count + 1;
+            alert(count)
+            location.href = `/quiz2?q_num=${question_num}&&check=${check}&&count=${count}`;
             sessionStorage.setItem('saved_num', num);
-            sessionStorage.setItem('saved_score', score);
         }     
-    }
-    function decode_utf8(s) {
-        return decodeURIComponent(escape(s));
     }
 </script>
 {% endblock %}

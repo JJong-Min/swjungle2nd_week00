@@ -1,14 +1,17 @@
+from array import array
 from flask import Flask, request, render_template, jsonify, redirect, url_for, session
 import requests, random
 from pymongo import MongoClient
 import jwt
 import datetime
+import numpy as np
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'dance'
 
 client = MongoClient('localhost', 27017)
 db = client.week0
-key = "secret"
+
 
 
 @app.route('/')
@@ -16,26 +19,40 @@ def home():
    for x in range(3):
       num = str(x+1)
       db.quiz2.update_one({'quiz_num':num},{'$set':{'check':False}})
+   session['score_check'] = 0
+   session['array_check'] = []
+   x = np.arange(4)
+   x = np.delete(x,0)
+   x = np.random.permutation(x)
+   for i in x:
+      session['array_check'].append(int(i))
    return render_template('index.html')
 
 
-@app.route('/quiz2')
+@app.route('/quiz2', methods=['GET', 'POST'])
 def quiz2():
-   rand = random.randint(1,3)
-   print(rand)
+   if request.method == 'POST':
+      session['score_check'] += 20
+      print(session['score_check'])
+      return jsonify({'msg':'점수공개'})
+   already_question_num = request.args.get('q_num')
+   already_check_num = request.args.get('check')
+   count = int(request.args.get('count'))
+   print(count)
+   check_answer = db.quiz2.find_one({'quiz_num':already_question_num})['answer']
+   if check_answer == already_check_num:
+      session['score_check'] += 20
+      print(session['score_check'])
+   #print(type(already_question_num),already_check_num)
+   rand = session['array_check'][count]
    num = str(rand)
    check = db.quiz2.find_one({'quiz_num':num})['check']
-   if check == False:
-      url = db.quiz2.find_one({'quiz_num':num})['url']
-      question = db.quiz2.find_one({'quiz_num':num})['question']
-      question_list = db.quiz2.find_one({'quiz_num':num})['questionList']
-      answer = db.quiz2.find_one({'quiz_num':num})['answer']
-      answer_encode = answer.encode()
-      print(answer)
-      db.quiz2.update_one({'quiz_num':num},{'$set':{'check':True}})
-      return render_template('quiz2.html',question_list=question_list, url=url, question=question, answer=answer_encode)
-   else:
-      return redirect('/quiz2')
+
+   url = db.quiz2.find_one({'quiz_num':num})['url']
+   question = db.quiz2.find_one({'quiz_num':num})['question']
+   question_list = db.quiz2.find_one({'quiz_num':num})['questionList']
+   answer = db.quiz2.find_one({'quiz_num':num})['answer']
+   return render_template('quiz2.html',question_list=question_list, score=session['score_check'],url=url, question=question, num_check=num, count=count)
    
 
 @app.route('/rank')
@@ -56,7 +73,7 @@ def rank_list():
 
 @app.route('/score')
 def score():
-   return render_template('score.html')
+   return render_template('score.html',score=session['score_check'])
 
 @app.route('/login')
 def login():
