@@ -1,62 +1,51 @@
 {% extends 'layout.html' %}
 {% block contents %}
-<div class="divider"></div>
-<div class="section">
-    <div class="col s12 m7">
-        <h4 class="header">퀴즈 1</h4>
-        <div class="card horizontal">
-            <div class="card-image">
+<div id="index_info">
+<div class="carousel carousel-slider center">
+    <div class="carousel-item red white-text">
+        <div id="index_card1">
+            <h1 class="index_h1">추억의 실루엣</h1>
+            <div>
+                <p class="white-text index_p">어린 시절, 포켓몬 도감을 외우던 우리</p>
+                <p class="white-text index_p">실루엣을 보고 포켓몬을 맞추며 추억을 되새겨 보세요.</p>
+            </div>
+        </div>
+        <div id="index_img1">
+            <img src="{{ url_for('static', filename='image/quiz1.jpg') }}" height="380" width="450">
+        </div>
+    </div>
 
+    <div class="carousel-item amber white-text" href="#two!">
+        <div id="index_card1">
+            <h1 class="index_h1">물어 물어 포켓몬</h1>
+            <div>
+                <p class="white-text index_p">여러분의 기억 속에 있는 포켓몬 지식</p>
+                <p class="white-text index_p">다양한 퀴즈를 풀어보며 추억 속으로 빠져보세요.</p>
             </div>
-            <div class="card-stacked">
-            <div class="card-content">
-                <p>퀴즈 1은 이러한 서비스입니다.</p>
+        </div>
+        <div id="index_img1">
+            <img src="{{ url_for('static', filename='image/quiz2.png') }}" height="380" width="450">
+        </div>
+    </div>
+    <div class="carousel-item green white-text" href="#three!">
+        <div id="index_card1">
+            <h1 class="index_h1">랭킹 시스템</h1>
+            <div>
+                <p class="white-text index_p">추억을 되새기며 풀었던 퀴즈</p>
+                <p class="white-text index_p">여러분의 점수를 랭킹 시스템에 올려보세요.</p>
+                <p class="white-text index_p">회원에게만 제공되는 기능입니다.</p>
             </div>
-            <div class="card-action">
-                <a href="#"></a>
-            </div>
-            </div>
+        </div>
+        <div id="index_img1">
+            <img src="{{ url_for('static', filename='image/ranking.PNG') }}" height="380" width="450">
         </div>
     </div>
 </div>
-
-<div class="col s12 m7">
-    <h5 class="header">퀴즈 2</h5>
-    <div class="card horizontal">
-        <div class="card-image">
-
-        </div>
-        <div class="card-stacked">
-        <div class="card-content">
-            <p>퀴즈 2는 이러한 시스템입니다.</p>
-        </div>
-        <div class="card-action">
-            <a href="#"></a>
-        </div>
-        </div>
-    </div>
-</div>
-
-<div class="section">
-    <div class="col s12 m7">
-        <h5 class="header">랭킹 시스템</h5>
-        <div class="card horizontal">
-            <div class="card-image">
-
-            </div>
-            <div class="card-stacked">
-            <div class="card-content">
-                <p>랭킹 시스템은 이러한 서비스입니다.</p>
-                <p>랭킹 시스템을 이용하고 싶다면 회원가입을 해주세요.</p>
-
-                <div class="card-action">
-                    <a href="#"></a>
-                </div>
-
-            </div>
-        </div>
-    </div>
 </div>
 <script>
+    var instance = M.Carousel.init({
+        fullWidth: true,
+        indicators: true
+      });
 </script>
 {% endblock %}

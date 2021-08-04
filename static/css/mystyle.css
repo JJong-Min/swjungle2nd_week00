@@ -1,3 +1,28 @@
+#index_info{
+    margin-top: 100px;
+    padding: 0px 200px;
+    position: relative;
+}
+
+#index_card1{
+    position: absolute;
+    top: -5px;
+    right: 250px;
+}
+
+#index_img1{
+    position: absolute;
+    top:10px;
+    left:10px;
+}
+.index_h1{
+    font-family: 'Do Hyeon', sans-serif;
+}
+
+.index_p{
+    font-family: 'Jua', sans-serif;
+}
+
 .rank_board{
     display: flex;
     justify-content: center;

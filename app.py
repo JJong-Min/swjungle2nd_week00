@@ -205,7 +205,7 @@ def id_overlapping_confirm():
 
 @app.route('/welcome')
 def welcome():
-   return render_template('welcome.html')
+   return render_template('/')
 
 @app.route('/modification', methods=['POST'])
 def modification():
