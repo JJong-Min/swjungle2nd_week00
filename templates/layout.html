@@ -16,21 +16,29 @@
             integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
             crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/mystyle.css') }}">
-    <script></script>
+    <script>
+    </script>
 </head>
     <nav id = "layout-nav">
         <div class="nav-wrapper">
             <div id="layout-nav-left">
                 <ul class="left hide-on-med-and-down">
                     <li><a href="/quiz1">퀴즈1</a></li>
-                    <li><a href="/quiz2">퀴즈2</a></li>
+                    <li><a href="/quiz2" onclick="JavaScript:sessionStorage.setItem('saved_num',0);sessionStorage.setItem('saved_score',0);">퀴즈2</a></li>
                 </ul>
             </div>
-        <a href="#!" class="brand-logo center">Logo</a>
+            <div>
+                <img href="/" onclick="JavaScript:location.href='/'; sessionStorage.setItem('saved_score', 0);" class='brand-logo center layout_mouse' alt='logo' src='../static/pokemon.png' width='20%' height='90px'>
+            </div>
             <div id="layout-nav-right">
                 <ul class="right hide-on-med-and-down">
                     <li><a href="/rank">랭킹</a></li>
-                    <li><a class="waves-effect waves-light btn" href="/login">로그인</a></li>
+                        <li onload="fun()"></li>
+                        {% if session['my_access_token'] %}
+                        <li><a class="waves-effect waves-light btn" href="/login">로그아웃</a></li>
+                        {% else %}
+                        <li><a class="waves-effect waves-light btn" href="/login">로그인</a></li>
+                        {% endif %}
                 </ul>
             </div>
         </div>

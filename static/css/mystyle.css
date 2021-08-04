@@ -73,3 +73,17 @@
     height: 100px;
     overflow: hidden;
 }
+.layout_mouse:hover{
+    cursor: pointer;
+}
+.score_score{
+    position: fixed;
+    top: 100px;
+    left: 50px;
+
+}
+.score_rank_btn{
+    position: fixed;
+    top: 250px;
+    left: 150px;
+}

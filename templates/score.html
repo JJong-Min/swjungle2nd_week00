@@ -1,14 +1,17 @@
 {% extends 'layout.html' %}
 {% block contents %}
 <div>
-    <h1 id="score_id">100점입니다.</h1>
-    <button>랭크보러가기</button>
+    <h3 id="score_id" class='score_score'>100점</h3>
+    <div class='score_rank_btn'>
+        <button>랭크보러가기</button>
+    </div>
+    
 </div>
 <script>
     $(document).ready(function(){
         score = sessionStorage.getItem('saved_score');
         console.log(score)
-        document.getElementById('score_id').innerHTML = `${score}점 입니다.`;
+        document.getElementById('score_id').innerHTML = `${score}점`;
     });
     
 </script>

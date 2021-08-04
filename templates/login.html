@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block contents %}
+<div id="login-form">
+    <div class="form-example">
+    <label for="userId">Enter your ID: </label>
+    <input type="text" name="userId" id="userId" required>
+    </div>
+    <div class="form-example">
+    <label for="password">Enter your password: </label>
+    <input type="password" name="password" id="password" required>
+    </div>
+    <div class="form-example" id="login-btn">
+        <button class="btn waves-effect waves-light" onclick="postArticle()">로그인</button>
+        <button class="btn waves-effect waves-light"><a href="/join" class="login-submit-btn">회원가입</a></button>
+    </div>
+</div>
+<script>
+    function postArticle() {
+        // 1. 유저가 입력한 데이터를 #post-url과 #post-comment에서 가져오기
+        let userID = $("#userId").val();
+        let userPW = $("#password").val();
+
+        // 2. memo에 POST 방식으로 메모 생성 요청하기
+        $.ajax({
+          type: "POST", // POST 방식으로 요청하겠다.
+          url: "/login_pro", // /memo라는 url에 요청하겠다.
+          data: { ID_give: userID, PW_give: userPW}, // 데이터를 주는 방법
+          success: function(response){ // 성공하면
+            console.log(response);
+            if (response['result'] == 'success') {
+                sessionStorage.setItem('my_access_token', response['access_token'], 1);
+                localStorage.setItem('my_refresh_token', response['refresh_token']);
+                location.href = "/";
+            } else {
+                alert("아이디 또는 비밀번호를 다시 확인해주세요.");
+                window.location.reaload();
+            }
+          }
+        })
+      }
+</script>
+{% endblock %}

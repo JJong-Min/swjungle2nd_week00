@@ -8,7 +8,7 @@
             {% for x in range(4) %}
                 <label class="quiz2_img">
                     <img class="quiz2_img_scale" src='{{url[x]}}' />
-                    <input class="with-gap" onclick="check_count()" name="group3" type="radio" checked />
+                    <input class="with-gap" onclick="check_count({{x+1}},'{{answer}}')" name="group3" type="radio" checked />
                     <span>{{question_list[x]}}</span>
                 </label>
             {% endfor %}
@@ -16,23 +16,37 @@
         </div>
     </div>
 <script>
-    num = 'null';
-    var score = 0;
-    num = sessionStorage.getItem('saved_num');
-    score = sessionStorage.getItem('saved_score');
-    function check_count(){
-        if(num == 'null11'){
-            location.href = `/score`;
-            sessionStorage.setItem('saved_num','null');
+    
+    $(document).ready(function(){
+        num = sessionStorage.getItem('saved_num');
+        score = sessionStorage.getItem('saved_score');
+        score = parseInt(score)
+        num = parseInt(num)
+        console.log(typeof(num),typeof(score))
+    });
+    function check_count(check,answer){
+        console.log(check,answer)
+        let answer_check = decode_utf8(answer)
+        console.log(check,answer_check)
+        if(check == answer){
+            score = score + 20;
+        }
+        if(num == 2){
+            sessionStorage.setItem('saved_score',score);
+            window.open('/score','점수입니다','width=400px,height=400px,left=600px')
+            location.href = `/`;
+            sessionStorage.setItem('saved_num',0);
+            sessionStorage.setItem('saved_score',0);
         }
         else{
-            num = num+'1';
-            score = score + 20;
-            console.log(num, score)
+            num = num + 1;
             location.href = `/quiz2`;
             sessionStorage.setItem('saved_num', num);
             sessionStorage.setItem('saved_score', score);
         }     
+    }
+    function decode_utf8(s) {
+        return decodeURIComponent(escape(s));
     }
 </script>
 {% endblock %}
