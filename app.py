@@ -16,9 +16,6 @@ db = client.week0
 
 @app.route('/')
 def home():
-   for x in range(3):
-      num = str(x+1)
-      db.quiz2.update_one({'quiz_num':num},{'$set':{'check':False}})
    session['score_check'] = 0
    session['array_check'] = []
    x = np.arange(4)
@@ -32,8 +29,11 @@ def home():
 @app.route('/quiz2', methods=['GET', 'POST'])
 def quiz2():
    if request.method == 'POST':
-      session['score_check'] += 20
-      print(session['score_check'])
+      last_question = request.form.get('last_question')
+      last_check = request.form.get('last_check')
+      if last_check == db.quiz2.find_one({'quiz_num':last_question})['answer']:
+         session['score_check'] += 20      
+         print(last_question, last_check)
       return jsonify({'msg':'점수공개'})
    already_question_num = request.args.get('q_num')
    already_check_num = request.args.get('check')
