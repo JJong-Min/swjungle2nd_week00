@@ -182,6 +182,22 @@ def modification():
 def modification_form():
    return render_template('modification.html')
 
+@app.route('/modification_complete', methods=['POST'])
+def modification_complete():
+   oridinal_id = request.form['Oridinal_id']
+   user_id = request.form['ID_give']
+   user_pw = request.form['PW_give']
+   pw_hash = bcrypt.generate_password_hash(user_pw)
+   user_email = request.form['Email_give']
+   user_name = request.form['Name_give']
+   try:
+      db.user_info.update_one({'userID':oridinal_id}, {'$set':{'userPW':pw_hash, 'userEmail': user_email, 'userName': user_name, 'userID':user_id}})
+      session['logged_in'] = False
+      return jsonify({"result": "success"})
+   except:
+      return jsonify({'result':'fail'})
+
+
 if __name__ == '__main__':
    
    app.run('0.0.0.0',port=5000,debug=True)
