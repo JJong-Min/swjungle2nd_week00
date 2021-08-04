@@ -16,30 +16,4 @@
     </div>
   </form>
 </div>
-<script>
-
-    function login() {
-
-        let userID = $("#userId").val();
-        let userPW = $("#password").val();
-
-
-        $.ajax({
-          type: "POST",
-          url: "/login_pro",
-          data: { ID_give: userID, PW_give: userPW},
-          success: function(response){
-            console.log(response);
-            if (response['result'] == 'success') {
-                sessionStorage.setItem('my_access_token', response['access_token']);
-                location.href = "/"
-
-            } else {
-                alert("아이디 또는 비밀번호를 다시 확인해주세요.");
-                window.location.reaload();
-            }
-          }
-        })
-      }
-</script>
 {% endblock %}

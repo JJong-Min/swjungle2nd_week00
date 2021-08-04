@@ -46,7 +46,7 @@
             </div>
             <div id="layout-nav-right">
                 <ul class="right hide-on-med-and-down">
-                    <li><a href="/rank">랭킹</a></li>
+                    <li><a onclick="go_rank()">랭킹</a></li>
                     {% if session['logged_in'] %}
                         <li><a onclick="getModification()">회원정보수정</a></li>
                     {% endif %}    
@@ -60,6 +60,12 @@
             </div>
         </div>
     </nav>
+    <script>
+        function go_rank(){
+            token = sessionStorage.getItem('my_access_token');
+            location.href=`/rank?my_access_token=${token}`;
+        }
+    </script>
     {% block contents %}
     {% endblock %}
 </body>

@@ -6,23 +6,41 @@ from flask_bcrypt import Bcrypt
 import jwt
 import datetime
 import numpy as np
+from functools import wraps
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'IOJPI241JPI'
 bcrypt = Bcrypt(app)
 client = MongoClient('localhost', 27017)
+#client = MongoClient('mongodb://test:test@localhost', 27017)
 db = client.week0
 
+def check_for_token(func):
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        token = request.args.get('my_access_token')
+        if not token:
+            print('no tokken')
+            return redirect('/login2')
+        try:
+            data = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS256')
+        except:
+            print('tokken invalid')
+            return redirect('/login2')
+        return func(*args, **kwargs)
+    return wrapped
 
 @app.route('/')
 def home():
    session['score_check'] = 0
    session['array_check'] = []
+   session['quiz_num'] = 0
    x = np.arange(7)
    x = np.delete(x,0)
    x = np.random.permutation(x)
    for i in x:
       session['array_check'].append(int(i))
+   print(session['array_check'])
    return render_template('index.html')
 
 
@@ -56,7 +74,8 @@ def quiz1():
       last_question = request.form.get('last_question')
       last_check = request.form.get('last_check')
       if last_check ==db.quiz1.find_one({'quiz_num': last_question})['answer']:
-         session['score_check'] += 25
+         session['score_check'] += 20
+         session['quiz_num'] =1
          print(last_question, last_check)
       return jsonify({'msg':'점수공개'})
 
@@ -64,11 +83,13 @@ def quiz1():
    already_check_num = request.args.get('check')
    count = request.args.get('count')
    count = int(count)
-   print(count)
-
-   check_answer = db.quiz1.find_one({'quiz_num':already_question_num})['answer']
+ 
+   print(type(already_question_num))
+   check_answer = db.quiz1.find_one({'quiz_num': already_question_num})['answer']
+   print(check_answer)
    if check_answer == already_check_num:
-      session['score_check'] += 25
+      session['score_check'] += 20
+      session['quiz_num'] = 1
       print(session['score_check'])
    #print(type(already_question_num),already_check_num)
    rand = session['array_check'][count]
@@ -83,7 +104,6 @@ def quiz1():
 @app.route('/rank')
 def rank():
    return render_template('ranking.html')
-
 
 @app.route('/rank_list')
 def rank_list():
@@ -103,14 +123,36 @@ def score():
 def login():
    return render_template('login.html')
 
+@app.route('/login2')
+def login2():
+   return render_template('login2.html')
+
+@app.route('/logincheck')
+@check_for_token
+def logincheck():
+   if session['logged_in'] == True:
+      user_token = request.args.get('my_access_token')
+      decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=["HS256"])
+      #print(decoded['id'], session['score_check'], session['quiz_num'])
+      doc = {'user_id':decoded['id'],'score':session['score_check'],'quiz':session['quiz_num']}
+      db.rank.insert_one(doc)
+      return redirect('/rank')
+   else:
+      return redirect('/login2')
+
 @app.route('/login_pro', methods=['POST'])
 def login_pro():
    user_id = request.form['ID_give']
    user_pw = request.form['PW_give']
+   log_check = request.form['log_check']
    user_info = db.user_info.find_one({'userID':user_id})
+   if log_check == '1':
+      #print(user_id, session['score_check'], session['quiz_num'])
+      doc = {'user_id':user_id,'score':session['score_check'],'quiz':session['quiz_num']}
+      db.rank.insert_one(doc)
    try:
       if bcrypt.check_password_hash(user_info['userPW'], user_pw):
-         access_payload = {"id": user_id, "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=3)}
+         access_payload = {"id": user_id, "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=30)}
          session['logged_in'] = True
          return jsonify({"result": "success", 'access_token': jwt.encode(access_payload, app.config['SECRET_KEY'], algorithm="HS256")})
 
@@ -119,10 +161,11 @@ def login_pro():
    except:
       return jsonify({"result": "fail"})
 
+
 @app.route('/logout')
 def logout():
     session['logged_in'] = False
-    print(session['logged_in'])
+    #print(session['logged_in'])
     return redirect('/')
 
 @app.route('/join', methods=['GET'])
@@ -180,5 +223,22 @@ def modification():
 def modification_form():
    return render_template('modification.html')
 
+@app.route('/modification_complete', methods=['POST'])
+def modification_complete():
+   oridinal_id = request.form['Oridinal_id']
+   user_id = request.form['ID_give']
+   user_pw = request.form['PW_give']
+   pw_hash = bcrypt.generate_password_hash(user_pw)
+   user_email = request.form['Email_give']
+   user_name = request.form['Name_give']
+   try:
+      db.user_info.update_one({'userID':oridinal_id}, {'$set':{'userPW':pw_hash, 'userEmail': user_email, 'userName': user_name, 'userID':user_id}})
+      session['logged_in'] = False
+      return jsonify({"result": "success"})
+   except:
+      return jsonify({'result':'fail'})
+
+
 if __name__ == '__main__':
-   app.run('0.0.0.0',port=5000,debug=True)
+   app.run('0.0.0.0', port=5000, debug=True)
+   #app.run(debug=True)

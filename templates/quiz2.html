@@ -1,0 +1,51 @@
+<!-- {% extends 'layout.html' %}
+{% block contents %}
+    <div class="quiz2_board">
+        <div class="quiz2_question">
+            <p>{{question}}</p>
+        </div>
+        <div class="quiz2_answer">
+            {% for x in range(4) %}
+                <label class="quiz2_img">
+                    <img class="quiz2_img_scale" src='{{url[x]}}'/>
+                    <input class="with-gap" onclick="check_count({{x+1}},'{{score}}','{{num_check}}','{{count}}')" name="group3" type="radio" checked />
+                    <span>{{question_list[x]}}</span>
+                </label>
+            {% endfor %}
+
+        </div>
+    </div>
+<script>
+    
+    $(document).ready(function(){
+        score = sessionStorage.getItem('saved_score');
+        score = parseInt(score)
+        num = parseInt(num)
+    });
+    function check_count(check,score,question_check,count){
+        let question_num = question_check;
+        count = parseInt(count);
+        if(count == 4){
+            $.ajax({
+                type: 'POST',
+                url: `/quiz2`,
+                data: {'last_question':question_num,
+                        'last_check':check},
+                success: function (response) {
+                    alert(response['msg'])
+                }
+            });
+            setTimeout(function(){
+                location.href = `/score`;
+            },1000);
+            sessionStorage.setItem('saved_num',0);
+        }
+        else{
+            count = count + 1;
+            //alert(count)
+            location.href = `/quiz2?q_num=${question_num}&&check=${check}&&count=${count}`;
+            sessionStorage.setItem('saved_num', num);
+        }     
+    }
+</script>
+{% endblock %} -->

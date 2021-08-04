@@ -132,8 +132,8 @@
     flex-direction: row;
 }
 .quiz2_img_scale{
-    width: 120px;
-    height: 100px;
+    width: 200px;
+    height: 200px;
     overflow: hidden;
 }
 .layout_mouse:hover{

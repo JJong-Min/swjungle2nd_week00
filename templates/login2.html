@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block contents %}
+<div id="login-form">
+  <form>
+    <div class="form-example">
+    <label for="userId">Enter your ID: </label>
+    <input type="text" name="userId" id="userId" required>
+    </div>
+    <div class="form-example">
+    <label for="password">Enter your password: </label>
+    <input type="password" name="password" id="password" required>
+    </div>
+    <div class="form-example" id="login-btn">
+        <button class="btn waves-effect waves-light" type="button" onclick="login()">로그인</button>
+        <button class="btn waves-effect waves-light" type="button" onClick="location.href='/join'">회원가입</button>
+    </div>
+  </form>
+</div>
+<script>
+
+    function login() {
+
+        let userID = $("#userId").val();
+        let userPW = $("#password").val();
+
+
+        $.ajax({
+          type: "POST",
+          url: "/login_pro",
+          data: { ID_give: userID, PW_give: userPW, log_check:'1'},
+          success: function(response){
+            console.log(response);
+            if (response['result'] == 'success') {
+                sessionStorage.setItem('my_access_token', response['access_token']);
+                location.href = "/rank"
+
+            } else {
+                alert("아이디 또는 비밀번호를 다시 확인해주세요.");
+                window.location.reaload();
+            }
+          }
+        })
+      }
+</script>
+{% endblock %}
