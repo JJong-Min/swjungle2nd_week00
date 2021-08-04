@@ -16,9 +16,9 @@
     </div>
 
     <div> <!--선택지-->
-        {% for question in questionList %}
+        {% for question in question_list %}
         <div style="float: left; margin-left: 2%;">
-            <button onclick="check_answer(`{{question}}`)">
+            <button onclick="check_answer('{{question}}')">
             {{question}}
             </button>
         </div>
@@ -28,30 +28,47 @@
 
 </div><!--가장밖 끝-->
 <script>
-    sessionStorage.setItem('saved_num', 1)
-    //시간되면 toInt 해주기
-     num = sessionStorage.getItem('saved_num')
-
     answer = '{{answer}}'
-    function check_answer(question){
+
+    score = sessionStorage.getItem('saved_score')
+    score = parseInt(score)
+
+    if(isNaN(score)){
+            score = 0;
+        }
         
+    times = sessionStorage.getItem('saved_times')
+    times = parseInt(times)
+    if(isNaN(times)){
+            times = 0;
+        }
+        console.log(score)
+        console.log(times)
+
+    function check_answer(question){
         if (question == answer){
             alert('answer')
+            score += 25
+            sessionStorage.setItem('saved_score', score);
         }
         else{
             alert('false')
         }
         // 몇 번째 문제인지 확인
-        if( num == 'null111'){
-            location.href = '/'
-            sessionStorage.setItem('saved_num', 'null');            
+        if( times == 2){
+            window.open('/score' , '점수입니다', 'width=400px,height=400px,left=600px')
+            location.href = '/';
+            sessionStorage.setItem('saved_tiems',0);
+            sessionStorage.setItem('saved_score',0);
+
         }
         else{
-            num += 1;
-            console.log(num);
-            sessionStorage.setItem('saved_num', num);
+            times += 1;
+            window.location.reload()
+            sessionStorage.setItem('saved_times',times)
         }   
     }
+    
     // $(document).ready(function(){
     //     $.ajax({
     //             type: 'GET',
