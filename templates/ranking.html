@@ -1,4 +1,96 @@
 {% extends 'layout.html' %}
 {% block contents %}
+<div class="rank_board">
+        <div id='rank' class="rank_container">
+            <div class="rank_btn_container">
+                <div class="rank_check">
+                    <p onclick="check(1)" onMouseover="this.style.color='white';" onMouseout="this.style.color='black';">quiz1 rank</p>
+                </div>
+                <div class="rank_check">
+                    <p onclick="check(2)" onMouseover="this.style.color='white';" onMouseout="this.style.color='black';">quiz2 rank</p>
+                </div>
+            </div>
+            <p id='check'>quiz1 입니다.</p>
+            <div class="list_container">
+                <table class="rank_table_parent">
+                    <thead class="rank_td">
+                        <tr>
+                          <th>랭크</th><th>유저네임</th><th>점수</th>
+                        </tr>
+                      </thead>
+                      <tbody id="table_id">
+                        <tr class="rank_table_child">
+                            <td class="rank_td">1</td>
+                            <td class="rank_td">1</td>
+                            <td class="rank_td">1</td>
+                        </tr>
+                        <tr class="rank_table_child">
+                            <td class="rank_td">2</td>
+                            <td class="rank_td">2</td>
+                            <td class="rank_td">2</td>
+                        </tr>
+                      </tbody>
+                    
+                </table>
+                
+            </div>
+        </div>
+        
+</div>
+<script>
+    $(document).ready(function(){
+        check(1);
+    });
+    function check(count){
+        check_count = count;
+        let temp_html = 0;
+        if(check_count == 1){
+            document.getElementById('check').innerHTML='quiz1 입니다.'
+            document.getElementById('rank').style.backgroundColor = 'wheat';
+            $.ajax({
+                type: 'GET',
+                url: `/rank_list?num=${check_count}`,
+                data: {},
+                success: function (response) {
+                    response['rank'].map((list,idx)=>{
+                        let user = list['user_id']
+                    let score = list['score']
+                    //console.log(user,score)
+                    temp_html += `<tr class="rank_table_child">
+                        <td class="rank_td">${idx+1}</td>
+                        <td class="rank_td">${user}</td>
+                        <td class="rank_td">${score}</td>
+                    </tr>`;
+                    })
+                    $('#table_id').html(temp_html);
+                }
+            });
+        }
+        if(check_count == 2){
+            let temp_html = 0;
+            document.getElementById('check').innerHTML='quiz2 입니다.'
+            document.getElementById('rank').style.backgroundColor = 'green';
+            $('table_id').empty(); 
+            $.ajax({
+                type: 'GET',
+                url: `/rank_list?num=${check_count}`,
+                data: {},
+                success: function (response) {
+                    response['rank'].map((list,idx)=>{
+                        let user = list['user_id']
+                    let score = list['score']
+                    //console.log(user,score)
+                    temp_html += `<tr class="rank_table_child">
+                        <td class="rank_td">${idx+1}</td>
+                        <td class="rank_td">${user}</td>
+                        <td class="rank_td">${score}</td>
+                    </tr>`;
 
+                    })
+                    $('#table_id').html(temp_html);
+                }
+            });
+        }
+    }
+</script>
 {% endblock %}
