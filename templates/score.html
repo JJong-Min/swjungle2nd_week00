@@ -3,11 +3,13 @@
 <div>
     <h3 id="score_id" class='score_score'>{{score}}점</h3>
     <div class='score_rank_btn'>
-        <button>랭크보러가기</button>
+        <button onclick='go_rank()'>랭크보러가기</button>
     </div>
-    
 </div>
 <script>
-    
+    function go_rank(){
+        token = sessionStorage.getItem('my_access_token');
+        location.href=`/logincheck?my_access_token=${token}`;
+    }
 </script>
 {% endblock %}

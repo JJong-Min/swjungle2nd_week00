@@ -29,20 +29,20 @@
             $.ajax({
                 type: 'POST',
                 url: `/quiz2`,
-                data: {},
+                data: {'last_question':question_num,
+                        'last_check':check},
                 success: function (response) {
                     alert(response['msg'])
                 }
             });
             setTimeout(function(){
-                window.open('/score','점수입니다','width=400px,height=400px,left=600px');
-                location.href = `/`;
+                location.href = `/score`;
             },1000);
             sessionStorage.setItem('saved_num',0);
         }
         else{
             count = count + 1;
-            alert(count)
+            //alert(count)
             location.href = `/quiz2?q_num=${question_num}&&check=${check}&&count=${count}`;
             sessionStorage.setItem('saved_num', num);
         }     
