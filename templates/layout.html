@@ -53,12 +53,9 @@
             <div id="layout-nav-right">
                 <ul class="right hide-on-med-and-down">
                     <li><a href="/rank">랭킹</a></li>
-                        <li onload="fun()"></li>
-                        {% if session['my_access_token'] %}
-                        <li><a class="waves-effect waves-light btn" href="/login">로그아웃</a></li>
-                        {% else %}
-                        <li><a class="waves-effect waves-light btn" href="/login">로그인</a></li>
-                        {% endif %}
+
+                    <li><a class="waves-effect waves-light btn" href="/login">로그인</a></li>
+
                 </ul>
             </div>
         </div>
