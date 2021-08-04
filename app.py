@@ -1,16 +1,10 @@
-
-from logging import DEBUG
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session
-
-
-
+from array import array
 from flask import Flask, request, render_template, jsonify, redirect, url_for, session
 import requests, random
-
-
 from pymongo import MongoClient
 import jwt
 import datetime
+import numpy as np
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "OOO"
@@ -29,29 +23,40 @@ def home():
    for x in range(3):
       num = str(x+1)
       db.quiz2.update_one({'quiz_num':num},{'$set':{'check':False}})
-
+   session['score_check'] = 0
+   session['array_check'] = []
+   x = np.arange(4)
+   x = np.delete(x,0)
+   x = np.random.permutation(x)
+   for i in x:
+      session['array_check'].append(int(i))
    return render_template('index.html')
 
 
-@app.route('/quiz2')
+@app.route('/quiz2', methods=['GET', 'POST'])
 def quiz2():
-   # test1 = {'quiz_num':1, 'question':'골드 버전에서 처음 고를 수 있는 포켓몬이 아닌 것은?', 'name': '브케인', 'url':'https://mblogthumb-phinf.pstatic.net/MjAyMDAxMTZfMTg4/MDAxNTc5MTA3ODQxOTg4.D9UzB7yzFnanFcm4w6tJRW5KFTcKLdf3NU5UKuiN2uwg.0vG-b0J0odK-8oOK6M5S7Et_kvTqI-Y2JVPDHp_88GEg.PNG.sanyo1122/pm0155_00_hinoarashi_256.ktx_.png?type=w800'}
-   # test2 = {'quiz_num':1, 'question':'골드 버전에서 처음 고를 수 있는 포켓몬이 아닌 것은?', 'name': '치코리타', 'url':'https://e7.pngegg.com/pngimages/666/1023/png-clipart-pokemon-pikachu-chikorita-fan-fiction-chikorita-pokemon-go-comics-mammal.png'}
-   # test3 = {'quiz_num':1, 'question':'골드 버전에서 처음 고를 수 있는 포켓몬이 아닌 것은?', 'name': '피카츄', 'url':'https://w7.pngwing.com/pngs/244/439/png-transparent-pikachu-drawing-anime-pokemon-pikachu-leaf-cartoon-flower.png'}
-   # test4 = {'quiz_num':1, 'question':'골드 버전에서 처음 고를 수 있는 포켓몬이 아닌 것은?', 'name': '리아코', 'url':'https://images.gameinfo.io/pokemon/256/158-00.png'}
-   rand = random.randint(1,3)
-   print(rand)
+   if request.method == 'POST':
+      session['score_check'] += 20
+      print(session['score_check'])
+      return jsonify({'msg':'점수공개'})
+   already_question_num = request.args.get('q_num')
+   already_check_num = request.args.get('check')
+   count = int(request.args.get('count'))
+   print(count)
+   check_answer = db.quiz2.find_one({'quiz_num':already_question_num})['answer']
+   if check_answer == already_check_num:
+      session['score_check'] += 20
+      print(session['score_check'])
+   #print(type(already_question_num),already_check_num)
+   rand = session['array_check'][count]
    num = str(rand)
    check = db.quiz2.find_one({'quiz_num':num})['check']
-   if check == False:
-      url = db.quiz2.find_one({'quiz_num':num})['url']
-      question = db.quiz2.find_one({'quiz_num':num})['question']
-      question_list = db.quiz2.find_one({'quiz_num':num})['questionList']
-      answer = db.quiz2.find_one({'quiz_num':num})['answer']
-      db.quiz2.update_one({'quiz_num':num},{'$set':{'check':True}})
-      return render_template('quiz2.html',question_list=question_list, url=url, question=question)
-   else:
-      return redirect('/quiz2')
+
+   url = db.quiz2.find_one({'quiz_num':num})['url']
+   question = db.quiz2.find_one({'quiz_num':num})['question']
+   question_list = db.quiz2.find_one({'quiz_num':num})['questionList']
+   answer = db.quiz2.find_one({'quiz_num':num})['answer']
+   return render_template('quiz2.html',question_list=question_list, score=session['score_check'],url=url, question=question, num_check=num, count=count)
    
 
 @app.route('/rank')
@@ -69,6 +74,10 @@ def rank_list():
       rank_list['_id'] = str(rank_list['_id']) 
       result.append(rank_list)
    return jsonify({'rank':result})
+
+@app.route('/score')
+def score():
+   return render_template('score.html',score=session['score_check'])
 
 @app.route('/login')
 def login():
@@ -123,7 +132,6 @@ def id_overlapping_confirm():
 @app.route('/welcome')
 def welcome():
    return render_template('welcome.html')
-
 
 if __name__ == '__main__':
    
