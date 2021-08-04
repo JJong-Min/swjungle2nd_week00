@@ -16,10 +16,6 @@ def home():
 
 @app.route('/quiz2')
 def quiz2():
-   # test1 = {'quiz_num':1, 'question':'골드 버전에서 처음 고를 수 있는 포켓몬이 아닌 것은?', 'name': '브케인', 'url':'https://mblogthumb-phinf.pstatic.net/MjAyMDAxMTZfMTg4/MDAxNTc5MTA3ODQxOTg4.D9UzB7yzFnanFcm4w6tJRW5KFTcKLdf3NU5UKuiN2uwg.0vG-b0J0odK-8oOK6M5S7Et_kvTqI-Y2JVPDHp_88GEg.PNG.sanyo1122/pm0155_00_hinoarashi_256.ktx_.png?type=w800'}
-   # test2 = {'quiz_num':1, 'question':'골드 버전에서 처음 고를 수 있는 포켓몬이 아닌 것은?', 'name': '치코리타', 'url':'https://e7.pngegg.com/pngimages/666/1023/png-clipart-pokemon-pikachu-chikorita-fan-fiction-chikorita-pokemon-go-comics-mammal.png'}
-   # test3 = {'quiz_num':1, 'question':'골드 버전에서 처음 고를 수 있는 포켓몬이 아닌 것은?', 'name': '피카츄', 'url':'https://w7.pngwing.com/pngs/244/439/png-transparent-pikachu-drawing-anime-pokemon-pikachu-leaf-cartoon-flower.png'}
-   # test4 = {'quiz_num':1, 'question':'골드 버전에서 처음 고를 수 있는 포켓몬이 아닌 것은?', 'name': '리아코', 'url':'https://images.gameinfo.io/pokemon/256/158-00.png'}
    rand = random.randint(1,3)
    print(rand)
    num = str(rand)
@@ -50,7 +46,9 @@ def rank_list():
       result.append(rank_list)
    return jsonify({'rank':result})
 
-
+@app.route('/score')
+def score():
+   return render_template('score.html')
 
 if __name__ == '__main__':
    

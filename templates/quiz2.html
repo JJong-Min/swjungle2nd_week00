@@ -17,17 +17,17 @@
     </div>
 <script>
     num = 'null';
-    score = 0;
+    var score = 0;
     num = sessionStorage.getItem('saved_num');
     score = sessionStorage.getItem('saved_score');
     function check_count(){
         if(num == 'null11'){
-            location.href = `/`;
+            location.href = `/score`;
             sessionStorage.setItem('saved_num','null');
         }
         else{
             num = num+'1';
-            score = score+20;
+            score = score + 20;
             console.log(num, score)
             location.href = `/quiz2`;
             sessionStorage.setItem('saved_num', num);
