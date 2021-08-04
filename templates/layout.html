@@ -15,7 +15,9 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
             integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
             crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/myjs.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/mystyle.css') }}">
+
     <script>
         function go_quiz2(){
             var num_check = 0;
@@ -24,6 +26,7 @@
             sessionStorage.setItem('saved_score',0);
         }
     </script>
+
 </head>
     <nav id = "layout-nav">
         <div class="nav-wrapper">
@@ -38,17 +41,26 @@
             </div>
             <div id="layout-nav-right">
                 <ul class="right hide-on-med-and-down">
-                    <li><a href="/rank">랭킹</a></li>
-                        <li onload="fun()"></li>
-                        {% if session['my_access_token'] %}
-                        <li><a class="waves-effect waves-light btn" href="/login">로그아웃</a></li>
-                        {% else %}
+                    <li><a onclick="go_rank()">랭킹</a></li>
+                    {% if session['logged_in'] %}
+                        <li><a onclick="getModification()">회원정보수정</a></li>
+                    {% endif %}    
+                    {% if session['logged_in'] %}
+                        <li><a class="waves-effect waves-light btn" href="/logout">로그아웃</a></li>
+                    {% else %}
                         <li><a class="waves-effect waves-light btn" href="/login">로그인</a></li>
-                        {% endif %}
+                    {% endif %}
+
                 </ul>
             </div>
         </div>
     </nav>
+    <script>
+        function go_rank(){
+            token = sessionStorage.getItem('my_access_token');
+            location.href=`/rank?my_access_token=${token}`;
+        }
+    </script>
     {% block contents %}
     {% endblock %}
 </body>

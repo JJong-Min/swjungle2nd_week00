@@ -8,7 +8,8 @@
 </div>
 <script>
     function go_rank(){
-        location.href = `/rank`;
+        token = sessionStorage.getItem('my_access_token');
+        location.href=`/logincheck?my_access_token=${token}`;
     }
 </script>
 {% endblock %}

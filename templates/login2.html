@@ -32,7 +32,7 @@
             console.log(response);
             if (response['result'] == 'success') {
                 sessionStorage.setItem('my_access_token', response['access_token']);
-                location.href = "/"
+                location.href = "/rank"
 
             } else {
                 alert("아이디 또는 비밀번호를 다시 확인해주세요.");
