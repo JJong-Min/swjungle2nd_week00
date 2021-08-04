@@ -15,31 +15,8 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
             integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
             crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/myjs.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/mystyle.css') }}">
-    <script>
-        function setCookie(c_name,value,exdays)
-        {
-        var exdate=new Date();
-        exdate.setDate(exdate.getDate() + exdays);
-        var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
-        document.cookie=c_name + "=" + c_value;
-        }
-
-        function getCookie(c_name)
-        {
-        var i,x,y,ARRcookies=document.cookie.split(";");
-        for (i=0;i<ARRcookies.length;i++)
-        {
-            x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
-            y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
-            x=x.replace(/^\s+|\s+$/g,"");
-            if (x==c_name)
-            {
-            return unescape(y);
-            }
-        }
-        }
-    </script>
 </head>
     <nav id = "layout-nav">
         <div class="nav-wrapper">
@@ -53,12 +30,14 @@
             <div id="layout-nav-right">
                 <ul class="right hide-on-med-and-down">
                     <li><a href="/rank">랭킹</a></li>
-                        <li onload="fun()"></li>
-                        {% if session['my_access_token'] %}
-                        <li><a class="waves-effect waves-light btn" href="/login">로그아웃</a></li>
-                        {% else %}
-                        <li><a class="waves-effect waves-light btn" href="/login">로그인</a></li>
-                        {% endif %}
+                    {% if session['logged_in'] %}
+                    <li><a onclick="getModification()">회원정보수정</a></li>
+                    {% endif %}    
+                    {% if session['logged_in'] %}
+                    <li><a class="waves-effect waves-light btn" href="/logout">로그아웃</a></li>
+                    {% else %}
+                    <li><a class="waves-effect waves-light btn" href="/login">로그인</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
