@@ -11,7 +11,8 @@ from functools import wraps
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'IOJPI241JPI'
 bcrypt = Bcrypt(app)
-client = MongoClient('localhost', 27017)
+#client = MongoClient('localhost', 27017)
+client = MongoClient('mongodb://test:test@localhost', 27017)
 db = client.week0
 
 def check_for_token(func):
@@ -33,11 +34,13 @@ def check_for_token(func):
 def home():
    session['score_check'] = 0
    session['array_check'] = []
-   x = np.arange(4)
+   session['quiz_num'] = 0
+   x = np.arange(7)
    x = np.delete(x,0)
    x = np.random.permutation(x)
    for i in x:
       session['array_check'].append(int(i))
+   print(session['array_check'])
    return render_template('index.html')
 
 
@@ -47,22 +50,22 @@ def quiz2():
       last_question = request.form.get('last_question')
       last_check = request.form.get('last_check')
       if last_check == db.quiz2.find_one({'quiz_num':last_question})['answer']:
-         session['score_check'] += 20      
-         print(last_question, last_check)
+         session['score_check'] += 20
+         session['quiz_num'] = 2
       return jsonify({'msg':'점수공개'})
    already_question_num = request.args.get('q_num')
    already_check_num = request.args.get('check')
    count = int(request.args.get('count'))
-   print(count)
    check_answer = db.quiz2.find_one({'quiz_num':already_question_num})['answer']
    if check_answer == already_check_num:
       session['score_check'] += 20
+      session['quiz_num'] = 2 
       print(session['score_check'])
    #print(type(already_question_num),already_check_num)
    rand = session['array_check'][count]
    num = str(rand)
    check = db.quiz2.find_one({'quiz_num':num})['check']
-
+   print(check)
    url = db.quiz2.find_one({'quiz_num':num})['url']
    question = db.quiz2.find_one({'quiz_num':num})['question']
    question_list = db.quiz2.find_one({'quiz_num':num})['questionList']
@@ -100,6 +103,11 @@ def login2():
 @check_for_token
 def logincheck():
    if session['logged_in'] == True:
+      user_token = request.args.get('my_access_token')
+      decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=["HS256"])
+      #print(decoded['id'], session['score_check'], session['quiz_num'])
+      doc = {'user_id':decoded['id'],'score':session['score_check'],'quiz':session['quiz_num']}
+      db.rank.insert_one(doc)
       return redirect('/rank')
    else:
       return redirect('/login2')
@@ -108,7 +116,12 @@ def logincheck():
 def login_pro():
    user_id = request.form['ID_give']
    user_pw = request.form['PW_give']
+   log_check = request.form['log_check']
    user_info = db.user_info.find_one({'userID':user_id})
+   if log_check == '1':
+      #print(user_id, session['score_check'], session['quiz_num'])
+      doc = {'user_id':user_id,'score':session['score_check'],'quiz':session['quiz_num']}
+      db.rank.insert_one(doc)
    try:
       if bcrypt.check_password_hash(user_info['userPW'], user_pw):
          access_payload = {"id": user_id, "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=30)}
@@ -199,5 +212,5 @@ def modification_complete():
 
 
 if __name__ == '__main__':
-   
-   app.run('0.0.0.0',port=5000,debug=True)
+   app.run('0.0.0.0', port=5000, debug=True)
+   #app.run(debug=True)

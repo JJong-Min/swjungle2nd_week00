@@ -17,7 +17,7 @@ function login() {
   $.ajax({
     type: "POST",
     url: "/login_pro",
-    data: { ID_give: userID, PW_give: userPW},
+    data: { ID_give: userID, PW_give: userPW, log_check:'0'},
     success: function(response){
       console.log(response);
       if (response['result'] == 'success') {
@@ -120,7 +120,7 @@ function newidOverlap() {
 }
 
 function getModification() {
-    let userToken = localStorage.getItem('my_access_token');
+    let userToken = sessionStorage.getItem('my_access_token');
     $.ajax({
       type: "POST", 
       url: "/modification",
