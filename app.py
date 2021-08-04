@@ -16,10 +16,6 @@ db = client.week0
 
 @app.route('/')
 def home():
-   if 'loged_in' in session:
-      print(session['logged_in'])
-   else:
-      print('a')
    for x in range(3):
       num = str(x+1)
       db.quiz2.update_one({'quiz_num':num},{'$set':{'check':False}})
@@ -159,6 +155,22 @@ def modification():
 @app.route('/modication_form')
 def modification_form():
    return render_template('modification.html')
+
+@app.route('/modification_complete', methods=['POST'])
+def modification_complete():
+   oridinal_id = request.form['Oridinal_id']
+   user_id = request.form['ID_give']
+   user_pw = request.form['PW_give']
+   pw_hash = bcrypt.generate_password_hash(user_pw)
+   user_email = request.form['Email_give']
+   user_name = request.form['Name_give']
+   try:
+      db.user_info.update_one({'userID':oridinal_id}, {'$set':{'userPW':pw_hash, 'userEmail': user_email, 'userName': user_name, 'userID':user_id}})
+      session['logged_in'] = False
+      return jsonify({"result": "success"})
+   except:
+      return jsonify({'result':'fail'})
+
 
 if __name__ == '__main__':
    
