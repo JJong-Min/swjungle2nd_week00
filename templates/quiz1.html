@@ -1,86 +1,64 @@
 {% extends 'layout.html' %}
 {% block contents %}
 
-
-<div> <!-- 가장 밖 div-->
-    
-    <div> <!-- progress bar-->
+    <div class="quiz1_board"> <!-- 가장 밖 div-->
+    <div class="quiz1_mid_div">
+    <div class="progress_bar_div"> <!-- progress bar-->
+        <progress value="{{(count+1) * 20}}" max="100" class="progress_bar"></progress>
     </div>
     
-    <div> <!-- 텍스트 박스-->
+    <div class="quiz1_question"> <!-- 텍스트 박스-->
         내가 누구게?
     </div>
     
-    <div> <!-- 사진-->
-    <img src = "{{imgSrc}}" alt="뽀껫몬~">
+    <div class="quiz1_img_div"> <!-- 사진-->
+    <img class="quiz1_img" src = "{{imgSrc}}" alt="뽀껫몬~">
     </div>
 
-    <div> <!--선택지-->
-        {% for question in question_list %}
+    <div class="quiz1_answer"> <!--선택지-->
+        {% for x in range(4) %}
         <div style="float: left; margin-left: 2%;">
-            <button onclick="check_answer('{{question}}')">
-            {{question}}
+            <button class="quiz1_button" onclick="check_count( `{{ x+1}}` ,'{{score}}','{{num_check}}','{{count}}')">
+            {{question_list[x]}}
             </button>
         </div>
         {% endfor %}
     </div> <!--선택지 끝-->
-
+</div>
 
 </div><!--가장밖 끝-->
 <script>
-    answer = '{{answer}}'
+    $(document).ready(function(){
+        score = sessionStorage.getItem('saved_score');
+        score = parseInt(score)
+        num = parseInt(num)
+    });
 
-    score = sessionStorage.getItem('saved_score')
-    score = parseInt(score)
-
-    if(isNaN(score)){
-            score = 0;
-        }
-        
-    times = sessionStorage.getItem('saved_times')
-    times = parseInt(times)
-    if(isNaN(times)){
-            times = 0;
-        }
-        console.log(score)
-        console.log(times)
-
-    function check_answer(question){
-        if (question == answer){
-            alert('answer')
-            score += 25
-            sessionStorage.setItem('saved_score', score);
+       function check_count(check,score,question_check,count){
+           console.log(check)
+        let question_num = question_check;
+        count = parseInt(count);
+        if(count == 2){
+            $.ajax({
+                type: 'POST',
+                url: `/quiz1`,
+                data: {'last_question' : question_num,
+            'last_check' :check},
+                success: function (response) {
+                    alert(response['msg'])
+                }
+            });
+            setTimeout(function(){
+                location.href='/score';
+            },1000);
+            sessionStorage.setItem('saved_num',0);
         }
         else{
-            alert('false')
-        }
-        // 몇 번째 문제인지 확인
-        if( times == 2){
-            window.open('/score' , '점수입니다', 'width=400px,height=400px,left=600px')
-            location.href = '/';
-            sessionStorage.setItem('saved_tiems',0);
-            sessionStorage.setItem('saved_score',0);
-
-        }
-        else{
-            times += 1;
-            window.location.reload()
-            sessionStorage.setItem('saved_times',times)
-        }   
+            count = count + 1;
+            location.href = `/quiz1?q_num=${question_num}&&check=${check}&&count=${count}`;
+            sessionStorage.setItem('saved_num', num);
+        }     
     }
-    
-    // $(document).ready(function(){
-    //     $.ajax({
-    //             type: 'GET',
-    //             url: 'quiz1',
-    //             data: {},
-    //             success: function (response) {
-    //                 let  imgSrc = response['imgSrc']
-    //                 let  questionList =response['questionList']
-    //                 let  answer = response['answer']
-    //             }
-    //         });
-
 </script>
 {% endblock %}
 

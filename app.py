@@ -1,67 +1,87 @@
-from flask import Flask, request, render_template, jsonify, redirect, url_for, session
+from array import array
+from flask import Flask, json, request, render_template, jsonify, redirect, url_for, session
 import requests, random
 from pymongo import MongoClient
+from flask_bcrypt import Bcrypt
 import jwt
 import datetime
+import numpy as np
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = "OOO"
-
+app.config['SECRET_KEY'] = 'IOJPI241JPI'
+bcrypt = Bcrypt(app)
 client = MongoClient('localhost', 27017)
 db = client.week0
 
 
-
 @app.route('/')
 def home():
-   if 'loged_in' in session:
-      print(session['logged_in'])
-   else:
-      print('a')
-   for x in range(3):
-      num = str(x+1)
-      # db.quiz2.update_one({'quiz_num':num},{'$set':{'check':False}})
-   
-   db.quiz1.update_many({},{'$set':{'check':False}})
+   session['score_check'] = 0
+   session['array_check'] = []
+   x = np.arange(7)
+   x = np.delete(x,0)
+   x = np.random.permutation(x)
+   for i in x:
+      session['array_check'].append(int(i))
    return render_template('index.html')
 
 
-# @app.route('/quiz2')
+# @app.route('/quiz2', methods=['GET', 'POST'])
 # def quiz2():
-#    rand = random.randint(1,3)
-#    print(rand)
+#    if request.method == 'POST':
+#       print(session['score_check'])
+#       return jsonify({'msg':'점수공개'})
+#    already_question_num = request.args.get('q_num')
+#    already_check_num = request.args.get('check')
+#    count = int(request.args.get('count'))
+#    print(count)
+#    check_answer = db.quiz2.find_one({'quiz_num':already_question_num})['answer']
+#    if check_answer == already_check_num:
+#       session['score_check'] += 20
+#       print(session['score_check'])
+#    #print(type(already_question_num),already_check_num)
+#    rand = session['array_check'][count]
 #    num = str(rand)
 #    check = db.quiz2.find_one({'quiz_num':num})['check']
-#    if check == False:
-#       url = db.quiz2.find_one({'quiz_num':num})['url']
-#       question = db.quiz2.find_one({'quiz_num':num})['question']
-#       question_list = db.quiz2.find_one({'quiz_num':num})['questionList']
-#       answer = db.quiz2.find_one({'quiz_num':num})['answer']
-#       answer_encode = answer.encode()
-#       print(answer)
-#       db.quiz2.update_one({'quiz_num':num},{'$set':{'check':True}})
-#       return render_template('quiz2.html',question_list=question_list, url=url, question=question, answer=answer_encode)
-#    else:
-#       return redirect('/quiz2')
 
-@app.route('/quiz1')
+#    url = db.quiz2.find_one({'quiz_num':num})['url']
+#    question = db.quiz2.find_one({'quiz_num':num})['question']
+#    question_list = db.quiz2.find_one({'quiz_num':num})['questionList']
+#    answer = db.quiz2.find_one({'quiz_num':num})['answer']
+#    return render_template('quiz2.html',question_list=question_list, score=session['score_check'],url=url, question=question, num_check=num, count=count)
+   
+@app.route('/quiz1', methods=['GET', 'POST'])
 def quiz1():
-      rand = random.randint(1,3)
-      tmp_num = str(rand)
-      check = db.quiz1.find_one({'quiz_num':tmp_num})['check']
-      if check == False:
-         url = db.quiz1.find_one({'quiz_num' : tmp_num})['imgSrc']
-         question_list = db.quiz1.find_one({'quiz_num' : tmp_num})['questionList']
-         answer = db.quiz1.find_one({'quiz_num':tmp_num})['answer']
-         print(question_list)
-         db.quiz1.update_one({'quiz_num': tmp_num},{'$set':{'check':True}})
-         return render_template('quiz1.html' ,  imgSrc = url, question_list  = question_list, answer= answer )
-      else:
-         return redirect('/quiz2')
+   if request.method == 'POST':
+      last_question = request.form.get('last_question')
+      last_check = request.form.get('last_check')
+      if last_check ==db.quiz1.find_one({'quiz_num': last_question})['answer']:
+         session['score_check'] += 25
+         print(last_question, last_check)
+      return jsonify({'msg':'점수공개'})
+
+   already_question_num = request.args.get('q_num')
+   already_check_num = request.args.get('check')
+   count = request.args.get('count')
+   count = int(count)
+   print(count)
+
+   check_answer = db.quiz1.find_one({'quiz_num':already_question_num})['answer']
+   if check_answer == already_check_num:
+      session['score_check'] += 25
+      print(session['score_check'])
+   #print(type(already_question_num),already_check_num)
+   rand = session['array_check'][count]
+   num = str(rand)
+   check = db.quiz1.find_one({'quiz_num':num})['check']
+
+   url = db.quiz1.find_one({'quiz_num':num})['imgSrc']
+   question_list = db.quiz1.find_one({'quiz_num':num})['questionList']
+   answer = db.quiz1.find_one({'quiz_num':num})['answer']
+   return render_template('quiz1.html',question_list=question_list, score=session['score_check'],imgSrc=url,  num_check=num, count=count)
 
 @app.route('/rank')
 def rank():
-
    return render_template('ranking.html')
 
 
@@ -77,7 +97,7 @@ def rank_list():
 
 @app.route('/score')
 def score():
-   return render_template('score.html')
+   return render_template('score.html',score=session['score_check'])
 
 @app.route('/login')
 def login():
@@ -89,17 +109,23 @@ def login_pro():
    user_pw = request.form['PW_give']
    user_info = db.user_info.find_one({'userID':user_id})
    try:
-      if user_info['userPW'] == user_pw:
-         access_payload = {"id": user_id, "password": user_pw, "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}
-         refresh_payload = {"id": user_id, "password": user_pw, "exp": datetime.datetime.utcnow() + datetime.timedelta(days=30)}
+      if bcrypt.check_password_hash(user_info['userPW'], user_pw):
+         access_payload = {"id": user_id, "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=3)}
          session['logged_in'] = True
-         return jsonify({"result": "success", 'access_token': jwt.encode(access_payload, app.config['SECRET_KEY'], algorithm="HS256"), 'refresh_token': jwt.encode(refresh_payload, app.config['SECRET_KEY'], algorithm="HS256")})
-      else:
-         return jsonify(result = "fail")
-   except:
-      return jsonify(result = "fail")
+         return jsonify({"result": "success", 'access_token': jwt.encode(access_payload, app.config['SECRET_KEY'], algorithm="HS256")})
 
-@app.route('/join')
+      else:
+         return jsonify({"result": "fail"})
+   except:
+      return jsonify({"result": "fail"})
+
+@app.route('/logout')
+def logout():
+    session['logged_in'] = False
+    print(session['logged_in'])
+    return redirect('/')
+
+@app.route('/join', methods=['GET'])
 def join():
    return render_template('join.html')
 
@@ -109,10 +135,11 @@ def join():
 def join_pro():
    user_id = request.form['ID_give']
    user_pw = request.form['PW_give']
+   pw_hash = bcrypt.generate_password_hash(user_pw)
    user_email = request.form['Email_give']
    user_name = request.form['Name_give']
    try:
-      db.user_info.insert_one({'userID':user_id, 'userPW': user_pw, 'userEmail': user_email, 'userName': user_name})
+      db.user_info.insert_one({'userID':user_id, 'userPW': pw_hash, 'userEmail': user_email, 'userName': user_name})
       return jsonify({"result": "success"})
    except:
       return jsonify({'result':'fail'})
@@ -132,6 +159,26 @@ def id_overlapping_confirm():
 @app.route('/welcome')
 def welcome():
    return render_template('welcome.html')
+
+@app.route('/modification', methods=['POST'])
+def modification():
+   user_token = request.form['token_give']
+   if not user_token:
+      return jsonify({'result': 'fail'})
+   try:
+      decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=["HS256"])
+      existing_user_infos = db.user_info.find_one({'userID':decoded['id']}, {'_id':False})
+      user_name = existing_user_infos['userName']
+      user_id = existing_user_infos['userID']
+      user_email = existing_user_infos['userEmail']
+      return jsonify({'result':'success', 'user_id':user_id, 'user_name': user_name, 'user_email': user_email})
+   except jwt.ExpiredSignatureError:
+      session['logged_in'] = False
+      return jsonify({'result':'fail'})
+
+@app.route('/modication_form')
+def modification_form():
+   return render_template('modification.html')
 
 if __name__ == '__main__':
    app.run('0.0.0.0',port=5000,debug=True)
